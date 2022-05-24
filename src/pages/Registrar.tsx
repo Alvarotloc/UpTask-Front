@@ -2,6 +2,11 @@ import { Link } from "react-router-dom"
 import { useState } from 'react';
 import type { IAlerta } from "../interfaces";
 import Alerta from "../components/Alerta";
+import axios from "axios";
+
+type RespuestaApi = {
+  msg : string
+}
 
 const Registrar = ():JSX.Element => {
   const [nombre, setNombre] = useState<string>('');
@@ -11,7 +16,7 @@ const Registrar = ():JSX.Element => {
   const alertaBase:IAlerta = {mensaje : '', error : false}
   const [alerta, setAlerta] = useState<IAlerta>(alertaBase);
 
-  const handleSubmit = (event:React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setAlerta(alertaBase)
     if([nombre,email,password,repetirPassword].includes('')){
@@ -35,9 +40,31 @@ const Registrar = ():JSX.Element => {
       });
       return;
     };
+
+    try {
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/usuarios`;
+      const {data}:{data : RespuestaApi} = await axios.post(url,{
+        nombre,
+        password,
+        email
+      });
+      setAlerta({
+        mensaje : data.msg,
+        error   : false,
+      });
+      setNombre('');
+      setEmail('');
+      setPassword('');
+      setRepetirPassword('');
+    } catch (error:any) {
+      setAlerta({
+        mensaje : error.response.data.msg,
+        error : true
+      })
+    }
   };
 
-  const {error} = alerta;
+  const {mensaje} = alerta;
 
   return (
     <>
@@ -46,7 +73,7 @@ const Registrar = ():JSX.Element => {
       <span className="text-slate-700">proyectos</span>
     </h1>
     <form className="my-10 bg-white shadow rounded-lg  p-10" onSubmit={handleSubmit}>
-      {error && <Alerta alerta={alerta}/>}
+      {mensaje && <Alerta alerta={alerta}/>}
       <fieldset className="border-0">
         <div className="mb-5 ">
           <label htmlFor="nombre" className="uppercase text-gray-600 block text-xl font-bold mb-3">Nombre</label>
