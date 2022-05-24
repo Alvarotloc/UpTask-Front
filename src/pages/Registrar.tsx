@@ -1,12 +1,8 @@
 import { Link } from "react-router-dom"
 import { useState } from 'react';
-import type { IAlerta } from "../interfaces";
+import type { IAlerta, RespuestaApi } from "../interfaces";
 import Alerta from "../components/Alerta";
 import axios from "axios";
-
-type RespuestaApi = {
-  msg : string
-}
 
 const Registrar = ():JSX.Element => {
   const [nombre, setNombre] = useState<string>('');
@@ -72,8 +68,8 @@ const Registrar = ():JSX.Element => {
       Crea tu cuenta y administra tus{" "}
       <span className="text-slate-700">proyectos</span>
     </h1>
-    <form className="my-10 bg-white shadow rounded-lg  p-10" onSubmit={handleSubmit}>
       {mensaje && <Alerta alerta={alerta}/>}
+    <form className="my-10 bg-white shadow rounded-lg  p-10" onSubmit={handleSubmit}>
       <fieldset className="border-0">
         <div className="mb-5 ">
           <label htmlFor="nombre" className="uppercase text-gray-600 block text-xl font-bold mb-3">Nombre</label>
