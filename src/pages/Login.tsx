@@ -29,13 +29,13 @@ export const Login: FC = (): JSX.Element => {
               htmlFor="password"
               className="uppercase text-gray-600 font-bold block"
             >
-              Password
+              Contraseña
             </label>
             <input
               type="password"
               name="password"
               id="password"
-              placeholder="Password de registro"
+              placeholder="Contraseña de registro"
               className="w-full px-3 py-2 border rounded-md bg-gray-50"
             />
           </div>

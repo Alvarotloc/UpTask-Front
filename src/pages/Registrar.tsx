@@ -1,13 +1,53 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Alerta } from "../components";
+import { IAlerta } from "../interfaces";
 export const Registrar: FC = (): JSX.Element => {
+
+  const [nombre, setNombre] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [confirmPassword, setConfirmPassword] = useState<string>('')
+  const [alerta, setAlerta] = useState<IAlerta>({} as IAlerta)
+
+  useEffect(() => {
+    if(alerta.error){
+    setTimeout(() => {
+        setAlerta({} as IAlerta)
+      }, 3000);
+    }
+  },[alerta])
+
+  const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if([nombre,email,password,confirmPassword].includes('')){
+      return setAlerta({
+        msg : 'Todos los campos son obligatorios',
+        error : true
+      })
+    }
+
+    if(confirmPassword !== password){
+      return setAlerta({
+        msg : 'Deben coincidir las contraseñas',
+        error:true
+      })
+    }
+    if(password.length < 6){
+      return setAlerta({
+        msg : 'La contraseña ha de tener como mínimo 6 caraceteres',
+        error:true
+      })
+    }
+  }
   return (
     <>
       <h1 className="text-sky-600 font-black text-5xl sm:text-6xl capitalize">
         Crea tu cuenta y administra{" "}
         <span className="text-slate-700">tus proyectos</span>
       </h1>
-      <form className="mt-10 mb-5 shadow bg-white rounded-md p-10">
+      {alerta.error && <Alerta error={alerta.error} msg={alerta.msg}/>}
+      <form className="mt-10 mb-5 shadow bg-white rounded-md p-10" onSubmit={handleSubmit}>
         <fieldset>
           <div className="mb-5 space-y-2">
             <label
@@ -21,6 +61,8 @@ export const Registrar: FC = (): JSX.Element => {
               name="nombre"
               id="nombre"
               placeholder="Tu nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
               className="w-full px-3 py-1 border rounded-md bg-gray-50"
             />
           </div>
@@ -35,6 +77,8 @@ export const Registrar: FC = (): JSX.Element => {
               type="email"
               name="email"
               id="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               placeholder="Email de registro"
               className="w-full px-3 py-1 border rounded-md bg-gray-50"
             />
@@ -44,13 +88,15 @@ export const Registrar: FC = (): JSX.Element => {
               htmlFor="password"
               className="uppercase text-gray-600 font-bold block"
             >
-              Password
+              Contraseña
             </label>
             <input
               type="password"
               name="password"
               id="password"
-              placeholder="Password de registro"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Contraseña de registro"
               className="w-full px-3 py-1 border rounded-md bg-gray-50"
             />
           </div>
@@ -65,6 +111,8 @@ export const Registrar: FC = (): JSX.Element => {
               type="password"
               name="confirmar"
               id="confirmar"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirma tu contraseña"
               className="w-full px-3 py-1 border rounded-md bg-gray-50"
             />
