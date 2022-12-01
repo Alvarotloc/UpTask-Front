@@ -1,4 +1,7 @@
 import { FC, useEffect, useState } from "react";
+import axios from 'axios'
+
+
 import { Link } from "react-router-dom";
 import { Alerta } from "../components";
 import { IAlerta } from "../interfaces";
@@ -18,7 +21,7 @@ export const Registrar: FC = (): JSX.Element => {
     }
   },[alerta])
 
-  const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if([nombre,email,password,confirmPassword].includes('')){
       return setAlerta({
@@ -39,6 +42,22 @@ export const Registrar: FC = (): JSX.Element => {
         error:true
       })
     }
+    try {
+      const {data} = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/usuarios`,{nombre,email,password})
+      setAlerta({
+        error:false,
+        msg:data.msg
+      })
+      setEmail('')
+      setPassword('')
+      setConfirmPassword('')
+      setNombre('')
+    } catch (error:any) {
+      setAlerta({
+        error:true,
+        msg:error.response.data.msg
+      })
+    }
   }
   return (
     <>
@@ -46,7 +65,7 @@ export const Registrar: FC = (): JSX.Element => {
         Crea tu cuenta y administra{" "}
         <span className="text-slate-700">tus proyectos</span>
       </h1>
-      {alerta.error && <Alerta error={alerta.error} msg={alerta.msg}/>}
+      {alerta.msg && <Alerta error={alerta.error} msg={alerta.msg}/>}
       <form className="mt-10 mb-5 shadow bg-white rounded-md p-10" onSubmit={handleSubmit}>
         <fieldset>
           <div className="mb-5 space-y-2">
