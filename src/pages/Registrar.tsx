@@ -14,7 +14,7 @@ export const Registrar: FC = (): JSX.Element => {
   const [alerta, setAlerta] = useState<IAlerta>({} as IAlerta)
 
   useEffect(() => {
-    if(alerta.error){
+    if(alerta.msg){
     setTimeout(() => {
         setAlerta({} as IAlerta)
       }, 3000);

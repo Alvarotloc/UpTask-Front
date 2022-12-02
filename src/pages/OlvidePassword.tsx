@@ -1,13 +1,58 @@
-import { FC } from "react";
+import axios from "axios";
+import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
+import { Alerta } from "../components";
+import { IAlerta } from "../interfaces";
+
 export const OlvidePassword: FC = (): JSX.Element => {
+  const [email, setEmail] = useState<string>("");
+  const [alerta, setAlerta] = useState<IAlerta>({} as IAlerta);
+
+  useEffect(() => {
+    if (alerta.msg) {
+      setTimeout(() => {
+        setAlerta({} as IAlerta);
+      }, 3000);
+    }
+  }, [alerta]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (email.trim() === "") {
+      return setAlerta({
+        error: true,
+        msg: "El Email no Debe ir Vacio",
+      });
+    }
+    try {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/usuarios/recuperar-password`,
+        { email }
+      );
+      setAlerta({
+        error: false,
+        msg: data.msg,
+      });
+      setEmail("");
+    } catch (error: any) {
+      setAlerta({
+        error: true,
+        msg: error.response.data.msg,
+      });
+    }
+  };
   return (
     <>
       <h1 className="text-sky-600 font-black text-5xl sm:text-6xl  capitalize">
         Recupera tu acceso y administra{" "}
         <span className="text-slate-700">tus proyectos</span>
       </h1>
-      <form className="mt-10 mb-5 shadow bg-white rounded-md p-10">
+      {alerta.msg && <Alerta error={alerta.error} msg={alerta.msg} />}
+      <form
+        className="mt-10 mb-5 shadow bg-white rounded-md p-10"
+        onSubmit={handleSubmit}
+      >
         <fieldset>
           <div className="mb-5 space-y-2">
             <label
@@ -21,6 +66,8 @@ export const OlvidePassword: FC = (): JSX.Element => {
               name="email"
               id="email"
               placeholder="Email de registro"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border rounded-md bg-gray-50"
             />
           </div>
