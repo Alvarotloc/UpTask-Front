@@ -1,9 +1,8 @@
 import { FC, useEffect, useState } from "react";
-import axios from 'axios'
-
-
 import { Link } from "react-router-dom";
+
 import { Alerta } from "../components";
+import clienteAxios from "../config/clienteAxios";
 import { IAlerta } from "../interfaces";
 export const Registrar: FC = (): JSX.Element => {
 
@@ -43,7 +42,7 @@ export const Registrar: FC = (): JSX.Element => {
       })
     }
     try {
-      const {data} = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/usuarios`,{nombre,email,password})
+      const {data} = await clienteAxios.post('/usuarios',{nombre,email,password})
       setAlerta({
         error:false,
         msg:data.msg

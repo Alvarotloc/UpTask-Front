@@ -1,8 +1,8 @@
-import axios from "axios";
 import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Alerta } from "../components";
+import clienteAxios from "../config/clienteAxios";
 import { IAlerta } from "../interfaces";
 
 export const OlvidePassword: FC = (): JSX.Element => {
@@ -26,8 +26,7 @@ export const OlvidePassword: FC = (): JSX.Element => {
       });
     }
     try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/usuarios/recuperar-password`,
+      const { data } = await clienteAxios.post('/usuarios/recuperar-password',
         { email }
       );
       setAlerta({

@@ -1,8 +1,8 @@
-import axios from "axios";
 import { FC, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { Alerta } from "../components";
+import clienteAxios from "../config/clienteAxios";
 import { IAlerta } from "../interfaces";
 export const NuevoPassword: FC = (): JSX.Element => {
   const [password, setPassword] = useState<string>("");
@@ -16,10 +16,8 @@ export const NuevoPassword: FC = (): JSX.Element => {
   useEffect(() => {
     const comprobarToken = async () => {
       try {
-        await axios(
-          `${
-            import.meta.env.VITE_API_BASE_URL
-          }/usuarios/recuperar-password/${token}`
+        await clienteAxios(
+          `/usuarios/recuperar-password/${token}`
         );
         setTokenValido(true);
       } catch (error: any) {
@@ -53,7 +51,7 @@ export const NuevoPassword: FC = (): JSX.Element => {
       });
     }
     try {
-      const {data} = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/usuarios/recuperar-password/${token}`,{password})
+      const {data} = await clienteAxios.post(`/usuarios/recuperar-password/${token}`,{password})
       setAlerta({
         error: false,
         msg: data.msg,

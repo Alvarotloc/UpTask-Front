@@ -1,7 +1,8 @@
-import axios from "axios";
 import { FC, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+
 import { Alerta } from "../components";
+import clienteAxios from "../config/clienteAxios";
 import { IAlerta } from "../interfaces";
 
 export const ConfirmarCuenta: FC = (): JSX.Element => {
@@ -13,10 +14,8 @@ export const ConfirmarCuenta: FC = (): JSX.Element => {
   useEffect(() => {
     const confirmarToken = async () => {
       try {
-        const url: string = `${
-          import.meta.env.VITE_API_BASE_URL
-        }/usuarios/confirmar/${id}`;
-        const { data } = await axios(url);
+        const url: string = `/usuarios/confirmar/${id}`;
+        const { data } = await clienteAxios(url);
         setUsuarioConfirmado(true)
         setAlerta({
           error: false,
